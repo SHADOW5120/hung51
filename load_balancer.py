@@ -50,3 +50,21 @@ def load_balancing():
 
 if __name__ == '__main__':
     load_balancing()
+
+# Tao Flow
+# curl -X POST -d '{
+#     "flowname":"flow1", 
+#     "switch":"00:00:00:00:00:01", 
+#     "name":"Flow1", 
+#     "cookie":"0", 
+#     "priority":"32768", 
+#     "active":"true", 
+#     "match":{
+#         "ipv4_src":"10.0.0.1", 
+#         "ipv4_dst":"10.0.0.2"
+#     }, 
+#     "actions":[{
+#         "type":"OUTPUT", 
+#         "port":1
+#     }]
+# }' http://127.0.0.1:8080/wm/staticflowpusher/flow/json
