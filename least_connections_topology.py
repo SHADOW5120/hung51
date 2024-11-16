@@ -1,30 +1,37 @@
-from mininet.topo import Topo
 from mininet.net import Mininet
-from mininet.node import RemoteController
-from mininet.link import TCLink
+from mininet.topo import Topo
+from mininet.cli import CLI
+from mininet.log import setLogLevel
 
-class LeastConnectionsTopo(Topo):
-    def __init__(self):
-        Topo.__init__(self)
+class MyTopo(Topo):
+    def build(self):
+        # Tạo các host và switch
+        h1 = self.addHost('h1', ip='10.0.0.1')
+        h2 = self.addHost('h2', ip='10.0.0.2')
+        h3 = self.addHost('h3', ip='10.0.0.3')
+        h4 = self.addHost('h4', ip='10.0.0.4')
+        s1 = self.addSwitch('s1')
 
-        # Thêm switch và máy chủ
-        switch = self.addSwitch('s1')
-        hosts = []
-        for i in range(1, 4):  # Tạo 3 máy chủ
-            host = self.addHost(f'h{i}')
-            self.addLink(host, switch, bw=10)
-            hosts.append(host)
+        # Kết nối các host với switch
+        self.addLink(h1, s1)
+        self.addLink(h2, s1)
+        self.addLink(h3, s1)
+        self.addLink(h4, s1)
 
-        # Thêm 1 client
-        client = self.addHost('client')
-        self.addLink(client, switch, bw=10)
+def run():
+    topo = MyTopo()
+    net = Mininet(topo=topo)
+    net.start()
 
-topos = {'leastconnections': (lambda: LeastConnectionsTopo())}
+    # Kiểm tra kết nối
+    print("Pinging all hosts...")
+    net.pingAll()
+
+    # Đưa Mininet vào trạng thái CLI
+    CLI(net)
+
+    net.stop()
 
 if __name__ == '__main__':
-    # Chạy Mininet với topology
-    topo = LeastConnectionsTopo()
-    net = Mininet(topo=topo, controller=RemoteController, link=TCLink)
-    net.start()
-    net.pingAll()
-    net.stop()
+    setLogLevel('info')
+    run()
